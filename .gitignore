@@ -1,0 +1,31 @@
+##  hodpodged together from other places
+
+######
+## Core latex/pdflatex auxiliary files:
+######
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+
+#Intermediate documents:
+*.dvi
+
+#Bibliography auxiliary files (bibtex/biblatex/biber):
+*.bbl
+*.bcf
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
+
+#Build tool auxiliary files:
+*.fdb_latexmk
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+
+#A number of other things are available at https://github.com/github/gitignore/blob/master/TeX.gitignore
