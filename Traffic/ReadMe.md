@@ -1,5 +1,5 @@
-## Traffic Examples From Paper
-<img src="http://www.bgu.ac.il/~bargera/tntp/SiouxFalls/SiouxFallsMap_AAA1998.jpg"" width="700">
+## Sioux Falls Example
+<img src="http://www.bgu.ac.il/~bargera/tntp/SiouxFalls/SiouxFallsMap_AAA1998.jpg"" width="500">
 
 ### Data
 The Sioux-Falls data used in the example is available from [respository](https://github.com/bstabler/TransportationNetworks).  You will need to unzip it and place in the "TrafficData" folder in order to run the code.  
