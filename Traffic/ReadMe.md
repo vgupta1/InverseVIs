@@ -2,7 +2,7 @@
 <img src="http://www.bgu.ac.il/~bargera/tntp/SiouxFalls/SiouxFallsMap_AAA1998.jpg"" width="500">
 
 ### Data
-The Sioux-Falls data used in the example is available from [respository](https://github.com/bstabler/TransportationNetworks).  You will need to unzip it and place in the "TrafficData" folder in order to run the code.  
+The Sioux-Falls data used in the example is available from [repository](https://github.com/bstabler/TransportationNetworks).  You will need to unzip it and place in the "TrafficData" folder in order to run the code.  
 
 ## Technical Details
 All relevand code is written in Julia using [JMP](https://github.com/JuliaOpt/JuMP.jl).  
