@@ -1,37 +1,43 @@
-## Solve an inverse tarffic problem over polynomials of degree at most d
-## optionally use a regularizer from the poly kernel
-
+###
+# Solve an inverse traffic problem over polynomials of degree at most d
+# Optionally use a regularizer from the poly kernel
+###
 using JuMP
 using Gurobi
 using Graphs
 using Roots
 
-
-polyEval(coeffs, pt) = sum([coeffs[i] * pt^(i-1) for i = 1:length(coeffs)])  #VG think about faster way to do this
+polyEval(coeffs, pt) = sum([coeffs[i] * pt^(i-1) for i = 1:length(coeffs)])  
 polyEval(coeffs::Array{Float64, 1}, pt) = sum([coeffs[i] * pt^(i-1) for i = 1:length(coeffs)]) #separate for consts
 
 bpacost(flow::Float64, capacity::Float64, freeflowtime::Float64) = freeflowtime*(1 + .15 * (flow/capacity)^4)
 bpacost(flow::Float64, arc) = bpacost(flow, arc.capacity, arc.freeflowtime)
 bpacost(arc::Arc) = bpacost(arc.obsflow, arc)
 
+derivcost(flow::Float64, capacity::Float64, freeflowtime::Float64) = freeflowtime / capacity * .15 * 4 * (flow/capacity)^3
+derivcost(flow::Float64, arc) = derivcost(flow, arc.capacity, arc.freeflowtime)
+derivcost(arc::Arc) = derivcost(arc.obsflow, arc)
+
 function setUpFitting(deg::Int, c, odpairs, nodes)
 	m = Model(solver=GurobiSolver(OutputFlag=false))
-	@defVar(m, coeffs[1:deg+1])
-	@defVar(m, Calphas[1:deg+1])
+	@defVar(m, coeffs[1:deg + 1])
+	@defVar(m, Calphas[1:deg + 1])
 
-	##VG Probably want to go back and redo this with an intercept term
 	#build the graham matrix
 	samples = linspace(0, 1, deg + 1)
 	k(x,y) = (c + x*y)^deg
-	K = [ k(x,y) for x = samples, y=samples]
-	assert(rank(K) == deg+1)
-	C = chol(K + 1e-6* eye(deg+1))
-	for i=1:deg + 1
+	K = [k(x,y) for x = samples, y=samples]
+	assert(rank(K) == deg + 1)
+	
+    #Perturb a little for numerical stability
+    C = chol(K + 1e-6 * eye(deg + 1))
+	
+    for i = 1:deg + 1
 		@addConstraint(m, polyEval(coeffs, samples[i]) == 
 						sum{C[j, i] * Calphas[j], j=1:deg+1})
 	end
 	@defVar(m, reg_term >= 0)
-	reg_term_ = QuadExpr(Calphas[:], Calphas[:], ones(deg+1), AffExpr() )
+	reg_term_ = QuadExpr(Calphas[:], Calphas[:], ones(deg + 1), AffExpr() )
 	addConstraint(m, reg_term >= reg_term_)
 
 	return m, coeffs, reg_term
@@ -43,6 +49,7 @@ function fixCoeffs(m, fcoeffs, coeffs)
 		@addConstraint(m, fc == c)
 	end
 end
+
 # function calcTrueCost(coeffs::Array{Float64, 1}, scaled_flows, free_flow_time, capacities)
 # 	return sum([free_flow_time[a]*capacities[a]*scaled_flows[a]*polyEval(coeffs, scaled_flows[a]) 
 # 				for a=1:length(scaled_flows)])
@@ -97,8 +104,8 @@ function addNetworkCnsts(m, coeffs, demands, arcs, numNodes)
 end
 
 #Uses a Frank-Wolfe algorithm to solve bpa cost for the given network.
-#construct the underlying graph
-#Fix an ordering of the arcs... should just be pointers
+#Takes as input the underlying graph object
+#The ordering of arcs must correspond to order that the graph was constructed
 function frank_wolfe(g, vArcs, demand_data, idx; TOL=1e-4, MAX_ITERS=100)
     #use the observed flows as the starting point
     flows =[a.obsflow::Float64 for a in vArcs]
@@ -148,9 +155,7 @@ function frank_wolfe(g, vArcs, demand_data, idx; TOL=1e-4, MAX_ITERS=100)
             costs = [bpacost(flows[ix], a) for (ix, a) in enumerate(vArcs)]
         end
     end
-    # VG Consider doing a polishing step to refine solution at the end...
-    # Maybe solve a simplicial assignment on last several extreme pt solutions via 1st order method
-    # Maybe switch over to refined step determination from fukushima paper
+
     return trace[length(trace)], flows
 end
 

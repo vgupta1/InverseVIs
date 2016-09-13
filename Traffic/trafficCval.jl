@@ -1,6 +1,6 @@
 using DataFrames, Resampling
 
-## File that runs the entire cross-val analysis and dumps it for the traffic stuff
+## File that runs the entire cross-val analysis and dumps it for the traffic example
 type Arc
 	initNode::Int
 	termNode::Int 
@@ -99,7 +99,7 @@ for iRun = 1:numData
     println(conv_tol)
 end
 
-#Randomzie the flow data a little bit too
+#Randomize the flow data as well
 for i = 1:size(flow_data, 1)
     for j = 1:size(flow_data, 2)
         flow_data[i, j] *= (1 + sigma * rand() )
@@ -179,7 +179,7 @@ df["A"] = 1:numData
 
 lamb_grid = [10. .^(-7:1)]
 c_grid = linspace(1, 5, 6)  # This choice of c_grid yields no distinguishable difference. Try: c_grid = 2. .^(1:5)
-deg_grid = [2:6]    #2 is a pretty meaningless choice.  drop to 3.
+deg_grid = [2:6]    
 N = length(lamb_grid) * length(c_grid) * length(deg_grid)
 
 res = Array(Float64, N, 5)
