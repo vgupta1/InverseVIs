@@ -9,9 +9,11 @@ This paper is available from [Mathematical Programming](http://link.springer.com
 
 Any questions can be addressed by email to the second author above.  
 
-##Citation
+## Citation
+
 If you find this code useful, please consider citing the paper above.  
 
-##Licensing
+## Licensing
+
 This code is available under the MIT License.  
 Copyright (c) 2013 Vishal Gupta
