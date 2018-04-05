@@ -17,3 +17,6 @@ If you find this code useful, please consider citing the paper above.
 
 This code is available under the MIT License.  
 Copyright (c) 2013 Vishal Gupta
+
+Also, if you use any portion of the software, I'd appreciate a quick note telling me the application.  As an academic, I like hearing about when my work is used and when it (hopefully) has impact.  
+
